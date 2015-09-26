@@ -21,6 +21,9 @@
 ##*******************************************************************************
 ##                                                                              *
 ##      makeCacheMatrix function :                                              *
+##                                                                              * 
+##      This function creates a special "matrix" object that can cache its      *
+##      inverse.                                                                *
 ##                                                                              *
 ##      Will create and manipulate a cached object holding the results of       *
 ##      a square invertable matrix. All subfunctions are made available and     *
@@ -28,39 +31,41 @@
 ##      instance of the makeCacheMatrix is created .                            * 
 ##                                                                              *
 ##              ie;  myfunc <- makeCacheMatrix()                                *
-##
-##      subfunctions defined :
-##
-##              setmatrix(mat_x = matrix)
-##
-##      matrix is initially set using the notation   :    myfunc$setmatrix(x)
-##
-##      matrix can be retrieved using                :    myfunc$getmatrix()
-##
-##       
-##      inverse matrix is set to the passed in value :    myfunc$setinverse(x)
-##              
-##      inverse matrix is returned                   :    myfunc$getinverse()
-##
-##******************************************************************************
+##                                                                              *
+##      subfunctions defined :                                                  *
+##                                                                              *
+##              setmatrix(mat_x = matrix)                                       * 
+##                                                                              *
+##      matrix is initially set using the notation   :    myfunc$setmatrix(x)   *
+##                                                                              *
+##      matrix can be retrieved using                :    myfunc$getmatrix()    *
+##                                                                              *
+##                                                                              *
+##      inverse matrix is set to the passed in value :    myfunc$setinverse(x)  *
+##                                                                              *
+##      inverse matrix is returned                   :    myfunc$getinverse()   *
+##                                                                              *
+##*******************************************************************************
 makeCacheMatrix <- function(mat_x = matrix()) {
         
         mat_xInversed <- NULL 
-        
+        # Set the cached matrix to null, since new matrix received.
         setmatrix <- function(mat_y = matrix()) {
                 mat_x <<- mat_y 
-                mat_xInversed <<- NULL # set to null locally in main function.(makeCacheMatrix)      
+                mat_xInversed <<- NULL # set cached matrix to null at main function scope level.      
         }
         
+        # Return the matrix
         getmatrix <- function() {
                 return(mat_x)
         }        
+        
+        #  Set value of the cached matrix.
         setinverse <- function(inverse) {
-                # set to the inverse and store locally in main function(makeCacheMatrix).
                 mat_xInversed <<- inverse 
-                
         }
         
+        # Return cached matix else return a null.
         getinverse <- function() {
                 if (is.null(mat_xInversed)) {
                         message("First use cachSolve() to calculate the inverse.")
@@ -68,15 +73,21 @@ makeCacheMatrix <- function(mat_x = matrix()) {
                 }
                 return(mat_xInversed)
         }
-        
+        # Return all function names embedded in main function.
         return(list(setmatrix = setmatrix,getmatrix = getmatrix, 
              setinverse = setinverse, getinverse = getinverse))
 }
 
 ##*****************************************************************************      
-## cacheSolve:                                                                *                 
+## cacheSolve:                                                                *        
+##                                                                            *                                                                              
+## This function computes the inverse of the special "matrix" returned by     *
+## makeCacheMatrix above. If the inverse has already been calculated          *
+## (and the matrix has not changed),then the cachesolve should retrieve       *
+## the inverse from the cache.                                                *        
+##                                                                            *        
 ##                                                                            *
-##      Will calcualte and return the inverse of a matrix.                    *        
+##      Will calculate and return the inverse of a matrix.                    *        
 ##                                                                            *        
 ##      Both the matrix and inverse result are retrived and stored            *
 ##      using the makeCacheMatric functions.                                  *
